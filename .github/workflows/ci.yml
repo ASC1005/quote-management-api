@@ -47,18 +47,3 @@ jobs:
         
     - name: Run tests
       run: npm test
-
-  deploy:
-    needs: test
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Deploy to production
-      run: |
-        echo "Add your deployment steps here"
-        # Example deployment steps:
-        # - SSH into server
-        # - Pull latest changes
-        # - Install dependencies
-        # - Restart service
