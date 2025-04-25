@@ -76,9 +76,10 @@ const updateQuote = asyncHandler(async (req, res) => {
         total += product.price * item.quantity;
     }
 
+    const filteredItems = items.filter(item => item.quantity > 0);
     const updatedQuote = await Quote.findOneAndUpdate(
         { _id: id, userId },
-        { items, total },
+        { items: filteredItems, total },
         { new: true }
     );
 

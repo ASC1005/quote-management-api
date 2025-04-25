@@ -1,0 +1,49 @@
+name: Quote API CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x]
+        mongodb-version: [6.0]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.10.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Create env file
+      run: |
+        echo "PORT=3000" >> .env
+        echo "MONGODB_URI=mongodb+srv://abhijeet:abhijeet@chatdb.otqygqq.mongodb.net" >> .env
+        echo "CORS_ORIGIN=*" >> .env
+        echo "ACCESS_TOKEN_SECRET=test-secret" >> .env
+        echo "ACCESS_TOKEN_EXPIRY=1d" >> .env
+        echo "REFRESH_TOKEN_SECRET=test-refresh-secret" >> .env
+        echo "REFRESH_TOKEN_EXPIRY=10d" >> .env
+        echo "GMAIL=test@example.com" >> .env
+        echo "GMAIL_PASS=dummy-pass" >> .env
+        echo "ADMIN_EMAIL=admin@example.com" >> .env
+        
+    - name: Run tests
+      run: npm test
