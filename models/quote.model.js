@@ -39,4 +39,10 @@ const quoteSchema = new Schema(
   { timestamps: true }
 );
 
+quoteSchema.pre(/^find/, function (next) {
+  const cutoffDate = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
+  this.where({ createdAt: { $gte: cutoffDate } });
+  next();
+});
+
 export const Quote = mongoose.model("Quote", quoteSchema);
